@@ -13,6 +13,10 @@ bl_info = {
 import bpy
 from bpy.props import EnumProperty, BoolProperty
 
+def get_real_users(datablock):
+	return datablock.users - 1 if datablock.use_fake_user else datablock.users
+
+
 class SA_OT_apply_scale_resize_modifiers(bpy.types.Operator):
 	"""Applies object scale and resizes object's modifiers"""
 	bl_idname = "object.sa_ot_apply_scale_resize_modifiers"
@@ -46,8 +50,7 @@ class SA_OT_apply_scale_resize_modifiers(bpy.types.Operator):
 			# get which scale to use from XYZ
 			scale = obj.scale[int(self.scale_source)]
 			
-			real_users = obj.data.users - 1 if obj.data.use_fake_user else obj.data.users
-			if real_users > 1:
+			if get_real_users(obj.data) > 1:
 				obj.data = obj.data.copy()
 			
 			for mod in obj.modifiers:
@@ -69,7 +72,7 @@ class SA_OT_apply_scale_resize_modifiers(bpy.types.Operator):
 					if mod.texture_coords != "UV" and mod.texture is not None:
 						# Check if texture is procedural
 						if mod.texture.type in ["CLOUDS", "DISTORTED_NOISE", "MAGIC", "MUSGRAVE", "STUCCI", "VORONOI"]:
-							if mod.texture.users > 1 and self.duplicate_multi_user_textures:
+							if get_real_users(mod.texture) > 1 and self.duplicate_multi_user_textures:
 								mod.texture = mod.texture.copy()
 							mod.texture.noise_scale *= scale
 						

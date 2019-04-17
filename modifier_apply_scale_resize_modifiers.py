@@ -11,7 +11,7 @@ bl_info = {
 }
 
 import bpy
-from bpy.props import EnumProperty
+from bpy.props import EnumProperty, BoolProperty
 
 class SA_OT_apply_scale_resize_modifiers(bpy.types.Operator):
 	"""Applies object scale and resizes object's modifiers"""
@@ -29,6 +29,12 @@ class SA_OT_apply_scale_resize_modifiers(bpy.types.Operator):
 		name="Resize Source",
 		description="Which axis to get resize scale for modifiers from.",
 		default="0"
+	)
+	
+	duplicate_multi_user_textures : BoolProperty(
+		name="Duplicate Multi-User Textures",
+		description="Duplicate textures that have multiple users.",
+		default=True
 	)
 
 	@classmethod
@@ -59,6 +65,8 @@ class SA_OT_apply_scale_resize_modifiers(bpy.types.Operator):
 					if mod.texture_coords != "UV" and mod.texture is not None:
 						# Check if texture is procedural
 						if mod.texture.type in ["CLOUDS", "DISTORTED_NOISE", "MAGIC", "MUSGRAVE", "STUCCI", "VORONOI"]:
+							if mod.texture.users > 1 and self.duplicate_multi_user_textures:
+								mod.texture = mod.texture.copy()
 							mod.texture.noise_scale *= scale
 						
 				elif mod.type == "HOOK":

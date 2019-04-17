@@ -46,6 +46,10 @@ class SA_OT_apply_scale_resize_modifiers(bpy.types.Operator):
 			# get which scale to use from XYZ
 			scale = obj.scale[int(self.scale_source)]
 			
+			real_users = obj.data.users - 1 if obj.data.use_fake_user else obj.data.users
+			if real_users > 1:
+				obj.data = obj.data.copy()
+			
 			for mod in obj.modifiers:
 				if mod.type == "ARRAY":
 					for i in range(3):

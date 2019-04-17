@@ -33,3 +33,7 @@ Find where you put the python file, select it, and click "Install from File"
 
 ## Notes
 Works best with objects that have uniform scale. If scale isn't uniform, use Resize Source to get a possibly better result.
+
+Automatically copies datablocks if they have multiple users.
+
+Array modifier's Constant Offset can use non-uniform scale.

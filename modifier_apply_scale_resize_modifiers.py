@@ -56,7 +56,7 @@ class SA_OT_apply_scale_resize_modifiers(bpy.types.Operator):
 			for mod in obj.modifiers:
 				if mod.type == "ARRAY":
 					for i in range(3):
-						mod.constant_offset_displace[i] *= scale
+						mod.constant_offset_displace[i] *= obj.scale[i]
 				elif mod.type == "BEVEL":
 					mod.width *= scale
 				elif mod.type == "SOLIDIFY":

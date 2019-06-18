@@ -1,9 +1,9 @@
 bl_info = {
 	"name": "Apply Scale and Resize Modifiers",
 	"author": "Kenetics",
-	"version": (0, 1),
+	"version": (0, 2),
 	"blender": (2, 80, 0),
-	"location": "View3D > Operator Search",
+	"location": "View3D > Apply Object Transform Menu (Ctrl + A)",
 	"description": "Applies object scale and applies scale to modifiers.",
 	"warning": "",
 	"wiki_url": "",
@@ -12,12 +12,16 @@ bl_info = {
 
 import bpy
 from bpy.props import EnumProperty, BoolProperty
+from bpy.types import Operator, Panel, AddonPreferences
+
+## Helper Functions
 
 def get_real_users(datablock):
 	return datablock.users - 1 if datablock.use_fake_user else datablock.users
 
+## Operators
 
-class SA_OT_apply_scale_resize_modifiers(bpy.types.Operator):
+class SA_OT_apply_scale_resize_modifiers(Operator):
 	"""Applies object scale and resizes object's modifiers"""
 	bl_idname = "object.sa_ot_apply_scale_resize_modifiers"
 	bl_label = "Apply Scale and Resize Modifiers"
@@ -43,7 +47,7 @@ class SA_OT_apply_scale_resize_modifiers(bpy.types.Operator):
 
 	@classmethod
 	def poll(cls, context):
-		return bool(context.selected_objects)
+		return context.selected_objects
 
 	def execute(self, context):
 		for obj in context.selected_objects:
@@ -92,11 +96,19 @@ class SA_OT_apply_scale_resize_modifiers(bpy.types.Operator):
 
 		return {'FINISHED'}
 
+## Append to UI Helper Functions
+
+def add_apply_scale_resize_modifiers_button(self, context):
+	self.layout.operator(SA_OT_apply_scale_resize_modifiers.bl_idname)
+
+## Register
 
 def register():
 	bpy.utils.register_class(SA_OT_apply_scale_resize_modifiers)
+	bpy.types.VIEW3D_MT_object_apply.append(add_apply_scale_resize_modifiers_button)
 
 def unregister():
+	bpy.types.VIEW3D_MT_object_apply.remove(add_apply_scale_resize_modifiers_button)
 	bpy.utils.unregister_class(SA_OT_apply_scale_resize_modifiers)
 
 if __name__ == "__main__":

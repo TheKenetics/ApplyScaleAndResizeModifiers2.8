@@ -27,6 +27,7 @@ Find where you put the python file, select it, and click "Install from File"
 
 ## Using
 1. Run the operator from...
+* 3D View > Apply Menu (Ctrl + A) > Apply Scale and Resize Modifiers  
 * Operator Search > Apply Scale and Resize Modifiers  
 2. The operator will resize the selected objects' modifiers and apply scale.
 3. Change Resize Source to get a possibly better result if the object's scale is not uniform.
